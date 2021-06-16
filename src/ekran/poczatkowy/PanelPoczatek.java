@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,9 +15,14 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+
+import ekran.efekty.PlayerSound;
+import ekran.ustawienia.PanelUstawienia;
 
 /*
  * autor : Sebastian Galewski
@@ -34,6 +40,7 @@ public class PanelPoczatek extends JPanel {
 	Timer timer = new Timer();
 	
 	int ll = 0;
+	static int ktory;
 	
 	//definicja kolorku
 	Color aquamarine = new Color(126 , 255 , 212);
@@ -51,9 +58,9 @@ public class PanelPoczatek extends JPanel {
 		loadImage("/img/tlo.jpg");
 		label1 = new JLabel("SURVIVE IN SPACE" , JLabel.CENTER);
 		label2 = new JLabel("Witaj ");
-		nick = new JLabel("\"nazwa u¿ytkownika\"");
+		nick = new JLabel(RamkaPoczatek.Uzytkownik);
 		label3 = new JLabel("Aktualny poziom : ");
-		poziom = new JLabel("3" , JLabel.CENTER);
+		poziom = new JLabel(""+RamkaPoczatek.Poziom , JLabel.CENTER);
 		//ustaw2ianie fontów
 		label1.setFont(new Font("TimesRoman", Font.BOLD , 48));
 		label1.setForeground(Color.white);
@@ -95,30 +102,51 @@ public class PanelPoczatek extends JPanel {
 		this.add(nick);
 		this.add(poziom);
 		
-		
-		
 		//dodanie akcji do przycisku Graj
 		btn1.addActionListener(new ActionListener() { 
 							
 			public void actionPerformed(ActionEvent e) 
 			{ 
-				ll = 40;
-				btn1.setEnabled(false);
-				btn2.setEnabled(false);
-				timer.schedule(new TimerTask() {
-		            @Override
-		            public void run () {
-		            	animation(ll*5);
-		            	if(ll == 2) {
-		            		timer.cancel();
-		            		ll = 1;
-		            	}
-		            }
-		        }, 5, 15);
+				if(RamkaPoczatek.Poziom == 0) {
+					JOptionPane.showMessageDialog(null, "Aby rozpocz¹æ grê trzeba dodaæ u¿ytkownika w ustawieniach");
+				}else {
+					ll = 40;
+					btn1.setEnabled(false);
+					btn2.setEnabled(false);
+					timer.schedule(new TimerTask() {
+			            @Override
+			            public void run () {
+			            	animation(ll*5);
+			            	if(ll == 2) {
+			            		timer.cancel();
+			            		ktory = 0;
+			            		ll = 1;
+			            	}
+			            }
+			        }, 5, 15);
+				}
+			} 
+		});
+		
+		//dodanie akcji do przycisku Ustawienia
+		btn2.addActionListener(new ActionListener() { 
+									
+			public void actionPerformed(ActionEvent e) 
+			{ 
+				ktory = 1;
+				ll = 1;
 			} 
 		});
 	}
-
+	
+	static public void koniecRoz() {
+		ktory = 2;
+	}
+	
+	public int CoWykonac() {
+		return ktory;
+	}
+	
 	public PanelPoczatek(LayoutManager layout) {
 		super(layout);
 		// TODO Auto-generated constructor stub
